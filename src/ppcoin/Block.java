@@ -8,15 +8,19 @@ import java.util.logging.Logger;
 
 public class Block {
 
-    private static Logger logger = Logger.getLogger(Block.class.getName());
+    private static final Logger logger = Logger.getLogger(Block.class.getName());
 
     private String hash;
     private String previousHash;
     private String data;
-    private long timeStamp;
-    private int nonce;
+    private Long timeStamp;
+    private Integer nonce;
+    private Thread hashUpdater;
+    private BlockChain ppc;
 
-    public Block(String data, String previousHash, long timeStamp) {
+    public Block(String data, String previousHash, long timeStamp, BlockChain pcc) {
+        this.nonce = 0;
+        this.ppc = pcc;
         this.data = data;
         this.previousHash = previousHash;
         this.timeStamp = timeStamp;

@@ -18,7 +18,7 @@ public class Tester {
         System.out.println(ppc.getBlock(3).getHash());
         System.out.println("\n");
 
-        System.out.println(ppc.replaceBlock(1, "Modified"));
+        System.out.println(ppc.replaceBlockNew(1, "Modified"));
         System.out.println("\n");
 
         System.out.println(ppc.getBlock(0).getHash() + " : " + ppc.getBlock(0).getData());
