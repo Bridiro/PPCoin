@@ -13,10 +13,10 @@ public class BlockChain {
 
     }
 
-    public Boolean addBlock(String data) {
-        Block newBlock = new Block(data, (this.blockchain.size() == 0) ? "0" : this.blockchain.get(this.blockchain.size() - 1).getHash(), new Date().getTime(), this);
+    public Boolean addBlock(String data, Integer n) {
+        Block newBlock = new Block(data, (this.blockchain.size() == 0) ? "0" : this.blockchain.get(this.blockchain.size() - 1).getHash(), new Date().getTime(), n, this);
         newBlock.mineBlock(this.prefix);
-        if(newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)) {
+        if (newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)) {
             this.blockchain.add(newBlock);
             return true;
         }
@@ -24,23 +24,23 @@ public class BlockChain {
     }
 
     public Boolean replaceBlock(Integer n, String data) {
-        for(int i=n; i<this.blockchain.size(); i++) {
-            Block newBlock = new Block((i == n) ? data : this.blockchain.get(i).getData(), (i == 0) ? "0" : this.blockchain.get(i - 1).getHash(), new Date().getTime(), this);
-            newBlock.mineBlock(this.prefix);
-            if(!(newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)))
-                return false;
-            this.blockchain.set(i, newBlock);
-        }
-        return true;
-    }
-
-    public Boolean replaceBlockNew(Integer n, String data) {
-        Block newBlock = new Block(data, (n == 0) ? "0" : this.blockchain.get(n - 1).getHash(), new Date().getTime(), this);
+        Block newBlock = new Block(data, (n == 0) ? "0" : this.blockchain.get(n - 1).getHash(), new Date().getTime(), n, this);
         newBlock.mineBlock(this.prefix);
         if(!(newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)))
             return false;
         this.blockchain.set(n, newBlock);
         return true;
+    }
+
+    public Boolean isValid() {
+        boolean valid = true;
+        for(Block b : this.blockchain) {
+            if (!(b.getHash().substring(0, this.prefix).equals(this.prefixString))) {
+                valid = false;
+                break;
+            }
+        }
+        return valid;
     }
 
     public Block getBlock(Integer n) {
@@ -49,5 +49,9 @@ public class BlockChain {
 
     public List<Block> getBlockchain() {
         return this.blockchain;
+    }
+
+    public void stopBlockChain() {
+        Block.stopUpdating();
     }
 }
