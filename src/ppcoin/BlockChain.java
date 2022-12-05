@@ -13,8 +13,40 @@ public class BlockChain {
 
     }
 
+    public Block getBlock(Integer n) {
+        return this.blockchain.get(n);
+    }
+
+    public List<Block> getBlockchain() {
+        return this.blockchain;
+    }
+
+    public void stopBlockChain() {
+        Block.stopUpdating();
+    }
+
     public Boolean addBlock(String data, Integer n) {
-        Block newBlock = new Block(data, (this.blockchain.size() == 0) ? "0" : this.blockchain.get(this.blockchain.size() - 1).getHash(), new Date().getTime(), n, this);
+        Block newBlock = new Block(data, new Date().getTime(), n, this);
+        newBlock.mineBlock(this.prefix);
+        if (newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)) {
+            this.blockchain.add(newBlock);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean addBlock(ArrayList<Transaction> t, Integer n) {
+        Block newBlock = new Block(t, new Date().getTime(), n, this);
+        newBlock.mineBlock(this.prefix);
+        if (newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)) {
+            this.blockchain.add(newBlock);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean addBlock(Integer n) {
+        Block newBlock = new Block(new Date().getTime(), n, this);
         newBlock.mineBlock(this.prefix);
         if (newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)) {
             this.blockchain.add(newBlock);
@@ -24,7 +56,7 @@ public class BlockChain {
     }
 
     public Boolean replaceBlock(Integer n, String data) {
-        Block newBlock = new Block(data, (n == 0) ? "0" : this.blockchain.get(n - 1).getHash(), new Date().getTime(), n, this);
+        Block newBlock = new Block(data, new Date().getTime(), n, this);
         newBlock.mineBlock(this.prefix);
         if(!(newBlock.getHash().substring(0, this.prefix).equals(this.prefixString)))
             return false;
@@ -43,15 +75,9 @@ public class BlockChain {
         return valid;
     }
 
-    public Block getBlock(Integer n) {
-        return this.blockchain.get(n);
-    }
-
-    public List<Block> getBlockchain() {
-        return this.blockchain;
-    }
-
-    public void stopBlockChain() {
-        Block.stopUpdating();
+    public void addTransaction(String senderId, String receiverId, Double money) {
+        Block b = this.blockchain.get(this.blockchain.size() - 1);
+        b.addTransaction(senderId, receiverId, money);
+        this.blockchain.set(this.blockchain.size() - 1, b);
     }
 }
