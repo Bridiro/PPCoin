@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class BlockChain {
-    private final List<Block> blockchain = new ArrayList<>();
+    private List<Block> blockchain = new ArrayList<>();
     private final Integer prefix = 4;
     private final String prefixString = new String(new char[prefix]).replace('\0', '0');
 
@@ -79,5 +79,14 @@ public class BlockChain {
         Block b = this.blockchain.get(this.blockchain.size() - 1);
         b.addTransaction(senderId, receiverId, money);
         this.blockchain.set(this.blockchain.size() - 1, b);
+    }
+
+    public void saveToFile() {
+        SaveToFile.writeToFile(blockchain);
+    }
+
+    public void restoreFromFile() {
+        this.blockchain = (List<Block>) SaveToFile.readFromFile();
+        System.out.println(this.blockchain);
     }
 }
